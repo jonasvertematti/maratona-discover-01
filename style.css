@@ -194,7 +194,7 @@ header {
 }
 
 td.expense {
-    color var(--red);
+    color: var(--red);
 }
 
 td.income {
@@ -244,6 +244,7 @@ td.income {
 
 #form input {
     border: none;
+    outline: none;
     width: 100%;
     padding: 0.8rem;
     border-radius: 0.25rem;
@@ -267,6 +268,11 @@ td.income {
 .input-group .button,
 .input-group button {
     width: 48%;
+}
+
+#form input.required {
+    border: 1px var(--red) solid;
+    transition: border ease-in-out;
 }
 
 
