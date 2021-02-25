@@ -255,7 +255,7 @@ td.income {
     margin-top: 0.8rem;
 }
 
-.input-group small {
+.input-group .help {
     opacity: 0.7;
 }
 
@@ -271,7 +271,7 @@ td.income {
 }
 
 #form input.required {
-    border: 1px var(--red) solid;
+    outline: 1px var(--red) solid;
     transition: border ease-in-out;
 }
 

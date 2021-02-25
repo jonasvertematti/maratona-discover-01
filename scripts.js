@@ -10,27 +10,21 @@ const Modal = {
             .querySelector('.modal-overlay')
             .classList
             .remove('active');
+        Form.clearFields();
+    }
+};
+
+const Storage = {
+    get() {
+        return JSON.parse(localStorage.getItem("transactions")) || [];
+    },
+    set(transactions) {
+        localStorage.setItem("transactions", JSON.stringify(transactions));
     }
 };
 
 const Transaction = {
-    all: [
-        {
-            description: 'Luz',
-            amount: -50000,
-            date: '23/01/2021'
-        },
-        {
-            description: 'Criação de Website',
-            amount: 500000,
-            date: '23/01/2021'
-        },
-        {
-            description: 'Internet',
-            amount: -20000,
-            date: '23/01/2021'
-        }
-    ],
+    all: Storage.get(),
 
     add(transaction) {
         Transaction.all.push(transaction);
@@ -39,6 +33,7 @@ const Transaction = {
     },
     remove(index) {
         Transaction.all.splice(index, 1);
+        App.reload();
     },
     incomes() {
         let income = 0;
@@ -70,12 +65,12 @@ const DOM = {
 
     addTransaction(transaction, index) {
         const tr = document.createElement("tr");
-        tr.innerHTML = DOM.innerHTMLTransaction(transaction);
+        tr.innerHTML = DOM.innerHTMLTransaction(transaction, index);
 
         DOM.transactionContainer.appendChild(tr);
 
     },
-    innerHTMLTransaction(transaction) {
+    innerHTMLTransaction(transaction, index) {
         const transactionClass = transaction.amount > 0 ? "income" : "expense";
 
         const amount = Utils.formatCurrency(transaction.amount);
@@ -84,7 +79,7 @@ const DOM = {
             `<td class="description">${transaction.description}</td>
             <td class="${transactionClass}">${amount}</td>
             <td class="date">${transaction.date}</td>
-            <td><img src="./assets/minus.svg" alt="Remover transação"></td>`;
+            <td><img onclick=Transaction.remove(${index}) src="./assets/minus.svg" alt="Remover transação"></td>`;
 
         return html;
     },
@@ -104,7 +99,89 @@ const DOM = {
     }
 };
 
+
+const Form = {
+    description: document.getElementById("description"),
+    amount: document.getElementById("amount"),
+    date: document.getElementById("date"),
+
+    getInputs() {
+        return [
+            Form.description,
+            Form.amount,
+            Form.date
+        ]
+    },
+    getValues() {
+        return {
+            description: Form.description.value,
+            amount: Form.amount.value,
+            date: Form.date.value
+        }
+    },
+    formatValues() {
+        let {description, amount, date} = Form.getValues();
+
+        amount = Utils.formatAmount(amount);
+        date = Utils.formatDate(date);
+
+        return {
+            description,
+            amount,
+            date
+        }
+
+    },
+    validateFields() {
+        let invalidFields = false;
+        Form.getInputs().forEach(input => {
+
+            if (input.value.trim() === "") {
+                input.classList.add("required");
+
+                input.addEventListener("input", () => {
+                    input.classList.remove("required");
+                });
+
+                invalidFields = true;
+            }
+        });
+
+        if (invalidFields) {
+            throw new Error();
+        }
+    },
+    clearFields() {
+        Form.getInputs().forEach(input => {
+            input.value = "";
+            input.classList.remove("required");
+        });
+
+    },
+    submit(event) {
+        event.preventDefault();
+        
+        try {
+            Form.validateFields();
+        const transaction = Form.formatValues();
+        Transaction.add(transaction);
+        Form.clearFields();
+        Modal.close();
+        } catch (error) {}
+        
+    }
+}
+
+
+
 const Utils = {
+    formatAmount(amount) {
+        return Math.round(Number(amount) * 100);
+    },
+    formatDate(date) {
+        const splittedDate = date.split("-");
+        return `${splittedDate[2]}/${splittedDate[1]}/${splittedDate[0]}`;
+    },
     formatCurrency(value) {
         const signal = Number(value) < 0 ? "-" : "";
 
@@ -122,47 +199,12 @@ const Utils = {
 };
 
 
-const Form = {
-    description: document.getElementById("description"),
-    amount: document.getElementById("amount"),
-    date: document.getElementById("date"),
-
-    getInputs() {
-        return [
-            Form.description,
-            Form.amount,
-            Form.date
-        ]
-    },
-    validateFields() {
-        Form.getInputs().forEach(input => {
-            if (input.value.trim() === "") {
-                input.classList.add("required");
-                input.addEventListener("input", () => {
-                    input.classList.remove("required");
-                })
-            }
-        });
-    },
-    submit(event) {
-        event.preventDefault();
-
-        try {
-            Form.validateFields();
-        } catch (error) {
-            alert(error.message);      
-        }
-    }
-}
-
-
 const App = {
     init() {
-        Transaction.all.forEach(transaction => {
-            DOM.addTransaction(transaction);
-        });
-
+        Transaction.all.forEach(DOM.addTransaction);
         DOM.updateBalance();
+
+        Storage.set(Transaction.all);
     },
     reload() {
         DOM.clearTransaction();
@@ -170,12 +212,4 @@ const App = {
     }
 }
 
-
 App.init();
-
-Transaction.add({
-    id: 10,
-    date: "23/06/1993",
-    amount: 30000,
-    description: "aniversário"
-})
