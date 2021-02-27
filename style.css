@@ -86,6 +86,43 @@ button:hover {
     display: inline-block;
 }
 
+#theme-switch {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+}
+
+
+#theme-switch input {
+    position: absolute;
+    opacity: 0;
+}
+
+#theme-switch label {
+    width: 50px;
+    height: 26px;
+    background: var(--dark-purple);
+    display: block;
+    text-indent: -9999px;
+    border-radius: 100px;
+    cursor: pointer;
+    position: relative;
+}
+
+#theme-switch #ball {
+    width: 22px;
+    height: 22px;
+    background: white;
+    border-radius: 50%;
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    transition: transform 0.2s ease-in-out;
+}
+
+#switch:checked + label #ball {
+    transform: translateX(24px);
+}
 
 /* Titles ===============================*/
 
