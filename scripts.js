@@ -121,16 +121,24 @@ const Form = {
     },
     formatValues() {
         let {description, amount, date} = Form.getValues();
-
         amount = Utils.formatAmount(amount);
-        date = Utils.formatDate(date);
-
         return {
             description,
             amount,
             date
         }
 
+    },
+    dateMask({target, key}) {
+        if(key === "Backspace") {
+          //ignore backspace 
+        }
+        else if (target.value.match(/^\d{2}$/) != null) {
+            target.value += "/";
+        }
+        else if (target.value.match(/^\d{2}\/\d{2}$/) != null) {
+            target.value += "/";
+        }
     },
     validateFields() {
         let invalidFields = false;
@@ -163,10 +171,10 @@ const Form = {
         
         try {
             Form.validateFields();
-        const transaction = Form.formatValues();
-        Transaction.add(transaction);
-        Form.clearFields();
-        Modal.close();
+            const transaction = Form.formatValues();
+            Transaction.add(transaction);
+            Form.clearFields();
+            Modal.close();
         } catch (error) {}
         
     }
@@ -177,10 +185,6 @@ const Form = {
 const Utils = {
     formatAmount(amount) {
         return Math.round(Number(amount) * 100);
-    },
-    formatDate(date) {
-        const splittedDate = date.split("-");
-        return `${splittedDate[2]}/${splittedDate[1]}/${splittedDate[0]}`;
     },
     formatCurrency(value) {
         const signal = Number(value) < 0 ? "-" : "";
@@ -213,3 +217,4 @@ const App = {
 }
 
 App.init();
+
