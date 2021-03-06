@@ -140,17 +140,27 @@ const Form = {
             target.value += "/";
         }
     },
+    validateDate() {
+        if (Form.date.value.length == 10) {
+            const splittedDate = Form.date.value.split("/");
+            const dateObj = new Date(splittedDate[2], splittedDate[1]-1, splittedDate[0]);
+
+            if (Form.date.value == dateObj.toLocaleDateString("pt-BR")) {
+                return true;
+            }
+        }
+        return false;
+    },
     validateFields() {
         let invalidFields = false;
         Form.getInputs().forEach(input => {
 
-            if (input.value.trim() === "") {
+            if (input.value.trim() == "" || input.id == "date" && !Form.validateDate()) {
                 input.classList.add("required");
 
                 input.addEventListener("input", () => {
                     input.classList.remove("required");
                 });
-
                 invalidFields = true;
             }
         });

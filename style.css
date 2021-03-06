@@ -15,7 +15,7 @@
     --form-input-font: black;
     --help-font: rgb(138, 138, 138);
     --input-date-font: black;
-
+    --footer-font: grey;
 }
 
 
@@ -289,7 +289,6 @@ td.income {
     width: 90%;
 
     position: relative;
-    z-index: 1;
 }
 
 /* Form ===============================*/
@@ -342,7 +341,7 @@ td.income {
 
 footer {
     text-align: center;
-    color: var(--dark-purple);
+    color: var(--footer-font);
     margin: 4rem 0 2rem;
     opacity: 0.6;
 }
