@@ -46,15 +46,18 @@ const changeColors = colors =>
 
 const StorageDarkTheme = {
     get() {
-        return localStorage.getItem("darkTheme") || false;
+        return localStorage.getItem("darkTheme") == "true" || false;
     },
     set(darkThemeState) {
         localStorage.setItem("darkTheme", darkThemeState);
     }
 }
 
+checkbox.checked = StorageDarkTheme.get();
+checkbox.checked ? changeColors(dark) : changeColors(light);
 
 checkbox.addEventListener("change", ({target}) => {
     target.checked ? changeColors(dark) : changeColors(light);
+    StorageDarkTheme.set(target.checked);
 })
 

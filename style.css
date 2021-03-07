@@ -132,15 +132,17 @@ button:hover {
     position: absolute;
     top: 2px;
     left: 2px;
-    transition: transform 0.2s ease-in-out;
+    transition: 0.3s ease-in-out;
 }
+
 
 #switch:checked + label {
     background: var(--dark-purple);
 }
 
 #switch:checked + label #ball {
-    transform: translateX(24px);
+    left: calc(100% - 2px);
+    transform: translateX(-100%);
 }
 
 /* Titles ===============================*/
